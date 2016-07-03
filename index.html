@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>VAE by RobRomijnders</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>VAE</h1>
+        <p>Variational Auto encoder on MNIST</p>
+
+        <p class="view"><a href="https://github.com/RobRomijnders/VAE">View the Project on GitHub <small>RobRomijnders/VAE</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/RobRomijnders/VAE/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/RobRomijnders/VAE/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/RobRomijnders/VAE">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="variational-auto-encoder" class="anchor" href="#variational-auto-encoder" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Variational Auto encoder</h1>
+
+<p>This post implements a variational auto-encoder for the handwritten digits of MNIST. The variational auto-encoder can be regarded as the Bayesian extension of the normal auto-encoder.</p>
+
+<p>An auto-encoder learns the identity function. It learns a function that returns itself. To ensure a compact <em>encoding</em> of the data, the network typically contains a bottleneck. For a neural network, a layer of only a few neurons serves as the bottle neck. This way, the auto-encoder is an unsupervised technique.</p>
+
+<p>The variational auto-encoder has two advantages over a normal auto-encoder</p>
+
+<ul>
+<li>The encoding network represents a transformation from data into a distribution over latent space. This allows us to reason about compression.</li>
+<li>The decoding network might be rephrased as a generative model. We can sample a vector in the latent space. The decoder network transforms that into a data-like vector that wasn;t part of the original dataset.</li>
+</ul>
+
+<h2>
+<a id="bottle-neck" class="anchor" href="#bottle-neck" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bottle neck</h2>
+
+<p>_The auto-encoder learns the identity function and we constrain that with a bottleneck. _ How can we interpret this statement in a Bayesian approach? For our neural network, the bottleneck can be a layer as compact as only two hidden neurons. Two hidden neurons capture a compact representation of the data sample. In a Bayesian setting, this bottleneck transfers information from encoding network to the decoding network. </p>
+
+<p>The two neurons form a deterministic vector in a 2 dimensional space. Imagine that this vector is the result of a probability distribution in that space. This 2D space contains a <em>latent</em> representation of the data. Now we can train the network by minimizing the KL-divergence between the encoded representation and the assumed distribution of the latent space. For simplicity, we assume this distribution is unit Gaussian, that results in an analytical solution. </p>
+
+<p>The cost function is this regularizing term, the KL divergence, and the likelihood of the data. MNIST images are valued between 0 and 1. That allows us to model the likelihood with a Bernoulli distribution. Under the Bernoulli distribution, our data has a certain likelihood. That likelihood we want to optimize. Conversely, we want to minimize the negative likelihood.</p>
+
+<h1>
+<a id="experiments-and-results" class="anchor" href="#experiments-and-results" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Experiments and results</h1>
+
+<p>We make the assumptions in the latent space ourselves. So we can pick any size of the latent space. If we pick a two dimensional, we can visualize what is happening. </p>
+
+<p>At first, we visualize how the actual data is located in the latent space. The variational auto-encoder is an unsupervised technique, but we can use the labels to color the visualization of the latent space. For MNIST, an example is the following figure
+<img src="https://github.com/RobRomijnders/VAE/blob/master/images/scatter_2d.png?raw=true" alt="Scatter_MNIST_VAE_2d">
+The different digits cluster nicely together in the latent space. Apparently, the auto-encoder learned some underlying structure of the data. Note that the networks consist only of perceptrons. No convolutions are used.</p>
+
+<p>Another way to visualize is to actually sample from the latent space. If we sample systematically from the latent space, we can understand its structure. The following canvas follows from samples at a uniform mesh in the latent space
+<img src="https://github.com/RobRomijnders/VAE/blob/master/images/canvas_2d.png?raw=true" alt="canvas_MNIST_VAE_2d">
+In the first visualization, we observed how true data clusters in the latent space. Now we observe the structure of samples from the latent space. The samples smoothly transition from numbers like 1 and 7, with a large central stroke, to numbers like 0, 6 and 5 with more curvature.</p>
+
+<h1>
+<a id="improvements" class="anchor" href="#improvements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Improvements</h1>
+
+<p>This variational auto-encoder is just a start in the world of unsupervised generative algorithms. Models like Generative Adversarial networks omit the Bayesian part and train a competing encoding and decoding-like network. The current model itself might be extended to convolutional auto-encoders.</p>
+
+<p>As always, I am curious to any comments and questions. Reach me at <a href="mailto:romijndersrob@gmail.com">romijndersrob@gmail.com</a> </p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/RobRomijnders">RobRomijnders</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
